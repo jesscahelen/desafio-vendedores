@@ -22,9 +22,9 @@ public class VendedorController {
     @PostMapping(value = "/vendedor")
     public ResponseEntity<String> add(@RequestBody VendedorDTO vendedorDTO) {
 
-        Vendedor vendedor = vendedorService.add(vendedorDTO);
-        if (vendedor == null) {
-            return new ResponseEntity<String>("Região indicada não existe.", HttpStatus.CONFLICT);
+        String retorno = vendedorService.add(vendedorDTO);
+        if (!retorno.equals("Ok")) {
+            return new ResponseEntity<String>(retorno, HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

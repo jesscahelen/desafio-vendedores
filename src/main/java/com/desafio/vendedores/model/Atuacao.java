@@ -20,6 +20,14 @@ public class Atuacao {
     @Column(name = "estados", columnDefinition = "text[]")
     private String[] estados;
 
+    public Atuacao(String regiao, String[] estados) {
+        this.regiao = regiao;
+        this.estados = estados;
+    }
+
+    public Atuacao() {
+    }
+
     public String getRegiao() {
         return regiao;
     }
@@ -35,4 +43,6 @@ public class Atuacao {
     public void setEstados(String[] estados) {
         this.estados = estados;
     }
+
+
 }

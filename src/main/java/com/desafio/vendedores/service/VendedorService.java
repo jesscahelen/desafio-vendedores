@@ -24,18 +24,27 @@ public class VendedorService {
     private AtuacaoRepository atuacaoRepository;
 
 
-    public Vendedor add(VendedorDTO vendedorDTO) {
+    public String add(VendedorDTO vendedorDTO) {
 
         Vendedor vendedor = dtoToEntity(vendedorDTO);
-        vendedor.setDataInclusao(LocalDate.now());
-        Atuacao atuacao = atuacaoRepository.findByRegiaoIgnoreCase(vendedorDTO.getRegiao());
-        if (atuacao == null) {
-            return null;
+        if (vendedorDTO.getNome() != null &&
+                vendedorDTO.getTelefone() != null &&
+                vendedorDTO.getIdade() != null &&
+                vendedorDTO.getCidade() != null &&
+                vendedorDTO.getEstado() != null &&
+                vendedorDTO.getRegiao() != null)
+        {
+            Atuacao atuacao = atuacaoRepository.findByRegiaoIgnoreCase(vendedorDTO.getRegiao());
+            if (atuacao == null) {
+                return "Região indicada não existe.";
+            }
+            vendedor.setRegiao(atuacao);
+            vendedor.setDataInclusao(LocalDate.now());
+            vendedorRepository.save(vendedor);
+            return "Ok";
         }
-        vendedor.setRegiao(atuacao);
-        vendedorRepository.save(vendedor);
 
-        return vendedor;
+        return "Os campos 'nome', 'telefone', 'idade', 'cidade', 'estado', 'regiao' são obrigatórios.";
     }
 
     public VendedorDTO findById(Long id) {
@@ -61,6 +70,7 @@ public class VendedorService {
     public Vendedor dtoToEntity(VendedorDTO vendedorDTO) {
 
         Vendedor vendedor = new Vendedor();
+
         vendedor.setNome(vendedorDTO.getNome());
         vendedor.setTelefone(vendedorDTO.getTelefone());
         vendedor.setIdade(vendedorDTO.getIdade());
@@ -72,22 +82,27 @@ public class VendedorService {
 
     public VendedorDTO entityToDtoBasicInfo(Vendedor vendedor) {
         VendedorDTO vendedorDTO = new VendedorDTO();
+
         vendedorDTO.setNome(vendedor.getNome());
         vendedorDTO.setDataInclusao(localDateToString(vendedor.getDataInclusao()));
-        vendedorDTO.setEstados(vendedor.getRegiao().getEstados());
+        if (vendedor.getRegiao() != null) {
+            vendedorDTO.setEstados(vendedor.getRegiao().getEstados());
+        }
 
         return vendedorDTO;
     }
 
     public VendedorDTO entityToDtoFullInfo(Vendedor vendedor) {
         VendedorDTO vendedorDTO = new VendedorDTO();
+
         vendedorDTO.setNome(vendedor.getNome());
         vendedorDTO.setTelefone(vendedor.getTelefone());
         vendedorDTO.setIdade(vendedor.getIdade());
         vendedorDTO.setCidade(vendedor.getCidade());
         vendedorDTO.setEstado(vendedor.getEstado());
-        vendedorDTO.setEstados(vendedor.getRegiao().getEstados());
-
+        if (vendedor.getRegiao() != null) {
+            vendedorDTO.setEstados(vendedor.getRegiao().getEstados());
+        }
         return vendedorDTO;
     }
 

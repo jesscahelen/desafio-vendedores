@@ -17,12 +17,12 @@ public class AtuacaoController {
     private AtuacaoService atuacaoService;
 
     @PostMapping(value = "/atuacao")
-    public ResponseEntity<HttpStatus> add(@RequestBody Atuacao atuacao) {
+    public ResponseEntity<String> add(@RequestBody Atuacao atuacao) {
 
         Atuacao atuacaoAdded = atuacaoService.add(atuacao);
         if (atuacaoAdded != null) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<String>("Região e Estados são campos obrigatórios.", HttpStatus.NOT_ACCEPTABLE);
     }
 }
